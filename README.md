@@ -62,6 +62,12 @@ directory, it does not copy it).
 
 ## Compatibility
 
+- **Supported DSH range: `>=0.2.0-0 <0.4`** (declared as `engines.dsh`; prereleases participate).
+  Built and verified on `0.2.1-rc.5`. The range covers the whole `0.2.x` line and `0.3.x`, so
+  forward releases install without any manual approval; `0.1.x` and `0.4+` are refused because the
+  scoped tool-registry surface the bundle relies on is not guaranteed there. On an out-of-range
+  runtime, DSH blocks activation and offers an explicit version exemption
+  (`dsh plugin allow-version`, or the plugin manager) if you accept the risk.
 - Built and tested against DSH's cordis tool registry with scoped-layer shadowing
   (`tools.register` through `agent.ctx`).
 - The client half declares its injections so it composes with
@@ -100,6 +106,18 @@ directory, it does not copy it).
   条目提升为顶层 `supplement` 字段。
 
 Host 半区还注册了一段 prompt section，向模型说明两种题型、placeholder 约定与补充说明约定。
+
+### 兼容性
+
+- **支持的 DSH 范围：`>=0.2.0-0 <0.4`**（通过 `engines.dsh` 声明，预发布版本参与匹配）。
+  已在 `0.2.1-rc.5` 上构建并验证。范围覆盖整个 `0.2.x` 与 `0.3.x`，后续版本可直接安装、无需
+  人工豁免；`0.1.x` 与 `0.4+` 会被拒绝——本组合包依赖的 scoped 工具注册表面不保证在那些版本
+  可用。超出范围时 DSH 会阻止激活，并提供显式版本豁免流程（`dsh plugin allow-version` 或插件
+  管理器），风险自担。
+- 基于 DSH cordis 工具注册表的 scoped-layer 遮蔽机制构建并测试（经 `agent.ctx` 调用的
+  `tools.register`）。
+- 客户端半区声明了对 `@deepseek-ai/dsh-client-ui-user-questions` 与
+  `@deepseek-ai/dsh-client-ui-conversation` 的注入依赖。
 
 ### 安装
 
