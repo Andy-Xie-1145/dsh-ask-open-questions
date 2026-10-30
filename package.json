@@ -1,0 +1,30 @@
+{
+  "name": "@local/ask-open-questions",
+  "version": "1.0.0",
+  "description": "Unified mixed-question ask_user_question card for DSH: choice and open-ended questions in one batch, with a free-form supplementary note.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Andy-Xie-1145/dsh-ask-open-questions.git"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "ask-user-question",
+    "agent-questions"
+  ],
+  "type": "module",
+  "exports": { ".": "./index.js", "./client": "./client.js" },
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-user-questions",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  }
+}

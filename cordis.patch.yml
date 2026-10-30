@@ -1,0 +1,5 @@
+# Installation manifest for the @local/ask-open-questions bundle.
+# install_bundle composes this into the profile; it touches no DSH installation file.
+- insert:
+    - id: ask-open-questions
+      name: '@local/ask-open-questions'
