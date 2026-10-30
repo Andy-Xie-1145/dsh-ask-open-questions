@@ -47,6 +47,7 @@ const SUPPLEMENT_SECTION = [
 
 const DESCRIPTION = [
   'Ask the user one or more questions and wait for the answers. One unified card renders both choice questions and open-ended questions, and a single batch may mix the two shapes freely.',
+  'Optional `context`: background information or material shown on the card above the first question; it belongs to no question and needs no answer.',
   'Choice question: give `options` (each `{label, description?}`). The user picks one, or several with `multi_select: true`. Put the recommended option first and append "(Recommended)" to its label.',
   'Open-ended question: give no `options`; the user types free-form text into its own input box. `placeholder` is the hint shown inside the empty box — phrase it as guidance for what a good answer contains, in the user-facing language. Do not invent options just to offer an escape hatch: when the user must write the answer (a path, a description, an opinion), ask an open-ended question.',
   '`header` adds a short section label; `required` marks questions whose empty answer blocks you (optional questions may be left blank, which reports as skipped).',
@@ -57,6 +58,26 @@ const DESCRIPTION = [
 /** Non-empty string check for model-supplied fields. */
 function isNonEmptyString(value) {
   return typeof value === 'string' && value.trim() !== '';
+}
+
+/** Upper bound on the optional context block; keeps the card renderable. */
+const MAX_CONTEXT_LENGTH = 20000;
+
+/**
+ * Validate the optional batch-level context block.
+ * @param {unknown} context - model-supplied context value.
+ * @returns {string|undefined} the trimmed context to display.
+ */
+function validateContext(context) {
+  if (context === undefined) return undefined;
+  if (typeof context !== 'string' || context.trim() === '') {
+    throw new Error('context must be a non-empty string when provided');
+  }
+  const trimmed = context.trim();
+  if (trimmed.length > MAX_CONTEXT_LENGTH) {
+    throw new Error(`context must be at most ${MAX_CONTEXT_LENGTH} characters`);
+  }
+  return trimmed;
 }
 
 /**
@@ -148,6 +169,10 @@ function makeDefinition(ctx) {
     parameters: {
       type: 'object',
       properties: {
+        context: {
+          type: 'string',
+          description: 'Optional background information or material for this batch, shown on the card above the first question. It belongs to no question and needs no answer; keep it to what helps the user decide.',
+        },
         questions: {
           type: 'array',
           description: `One to ${MAX_QUESTIONS} questions; each is a choice question (with options) or an open-ended question (without). Choice and open-ended questions may mix freely in one batch.`,
@@ -250,8 +275,14 @@ function makeDefinition(ctx) {
     },
     async execute(args, exec) {
       validateQuestions(args.questions);
+      const context = validateContext(args.context);
+      const serviceQuestions = args.questions.map(toServiceQuestion);
+      // The service card layer reads per-question fields only, so the
+      // batch-level context rides on the first question; the client half
+      // lifts it back out and renders it above the questions.
+      if (context !== undefined) serviceQuestions[0].context = context;
       const result = await ctx.userQuestions.ask({
-        questions: args.questions.map(toServiceQuestion),
+        questions: serviceQuestions,
         ...(exec.agent !== undefined ? { agent: exec.agent } : {}),
         signal: exec.signal,
         // Key the client card to this tool call, so closing the card only

@@ -16,6 +16,9 @@ question.
   agent) apply to either shape.
 - **Supplementary note.** The card carries an "Add a note" entry; whatever the user types there
   arrives at the model as a top-level `supplement` string — it answers no question.
+- **Batch context.** The model may pass an optional `context` string (background information or
+  material); the card renders it between the title and the first question. It belongs to no
+  question and needs no answer.
 - **Structured result.** One item per question, in question order:
 
 ```json
@@ -91,6 +94,8 @@ directory, it does not copy it).
 - **每题元数据**：`header`（分区标题）与 `required`（留空即阻塞）对两种题型均适用。
 - **补充说明**：卡片底部有"添加补充说明"入口；用户所写以顶层 `supplement` 字符串送达模型，
   不对应任何问题。
+- **批次上下文**：模型可传入可选的 `context` 字符串（背景信息/材料）；卡片在标题下方、第一个
+  问题上方渲染该区块。它不对应任何问题，也无需回答。
 - **结构化结果**：每题一项、按提问顺序返回（示例见上方英文段落）。
 - **双语界面**：卡片文案跟随浏览器语言（English / 简体中文）。
 - **兼容官方卡片**：客户端半区对官方的 timed 倒计时卡与 plan-review 审批卡原样放行。

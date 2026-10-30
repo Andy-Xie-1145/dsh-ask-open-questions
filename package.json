@@ -1,6 +1,6 @@
 {
   "name": "@local/ask-open-questions",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Unified mixed-question ask_user_question card for DSH: choice and open-ended questions in one batch, with a free-form supplementary note.",
   "license": "MIT",
   "repository": {

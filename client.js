@@ -27,6 +27,7 @@ window.__ModuleLoader__.load({
       customPlaceholder: '输入你的答案',
       required: '必答',
       recommended: '推荐',
+      contextLabel: '背景材料',
       supplementAdd: '添加补充说明',
       supplementTitle: '补充说明',
       supplementPlaceholder: '想额外告诉 Agent 的信息,不对应任何问题…',
@@ -44,6 +45,7 @@ window.__ModuleLoader__.load({
       customPlaceholder: 'Type your answer',
       required: 'required',
       recommended: 'Recommended',
+      contextLabel: 'Context',
       supplementAdd: 'Add a note',
       supplementTitle: 'Supplementary note',
       supplementPlaceholder: 'Anything else you want to tell the agent — belongs to no question…',
@@ -73,6 +75,7 @@ window.__ModuleLoader__.load({
 .aoq-body{overflow-y:auto;padding:2px 16px 6px}
 .aoq-q{padding:12px 0}
 .aoq-q+.aoq-q{border-top:1px solid var(--dsw-alias-border-l1)}
+.aoq-context{padding:12px 0 2px}
 .aoq-qheader{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
   color:var(--dsw-alias-label-secondary);margin-bottom:4px}
 .aoq-qtext{font-weight:500;margin-bottom:8px;white-space:pre-wrap;word-break:break-word}
@@ -220,6 +223,12 @@ window.__ModuleLoader__.load({
       const [busy, setBusy] = React.useState(false);
 
       const readOnly = review !== undefined;
+      // Batch-level context: the Host half rides it on the first question's
+      // service object; lift it back out and render it above the questions.
+      const contextText = typeof questions[0]?.context === 'string' ? questions[0].context : '';
+      const contextBlock = contextText === '' ? null : h('div', { className: 'aoq-context', key: 'context' },
+        h('div', { className: 'aoq-qheader' }, T.contextLabel),
+        h('div', { className: 'aoq-answer' }, contextText));
       const answerable = !readOnly && snap.channel !== 'none' && !snap.closed;
       const locked = !answerable || busy;
       // A required question left empty keeps the submit action disabled, the
@@ -389,6 +398,7 @@ window.__ModuleLoader__.load({
                 onClick: () => { Promise.resolve(card.dismiss()).catch(() => {}); },
               }, '✕')),
             h('div', { className: 'aoq-body' },
+              contextBlock,
               readOnly ? reviewBody() : answerBody(),
               supplementArea),
             readOnly
