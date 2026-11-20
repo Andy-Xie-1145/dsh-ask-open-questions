@@ -94,7 +94,8 @@ directory, it does not copy it).
 ## Compatibility
 
 - **Supported DSH range: `>=0.2.0-0 <0.4`** (declared as `engines.dsh`; prereleases participate).
-  Built and verified on `0.2.1-rc.5`. The range covers the whole `0.2.x` line and `0.3.x`, so
+  Built and verified on `0.2.1-rc.5` and `0.2.2-rc.5`. The range covers the whole `0.2.x` line and
+  `0.3.x`, so
   forward releases install without any manual approval; `0.1.x` and `0.4+` are refused because the
   scoped tool-registry surface the bundle relies on is not guaranteed there. On an out-of-range
   runtime, DSH blocks activation and offers an explicit version exemption
@@ -103,6 +104,10 @@ directory, it does not copy it).
   (`tools.register` through `agent.ctx`).
 - The client half declares its injections so it composes with
   `@deepseek-ai/dsh-client-ui-user-questions` and `@deepseek-ai/dsh-client-ui-conversation`.
+- **Runtime toggles are not persistent on DSH 0.2.2+.** The loader now keeps patch-inserted bundle
+  rows (this bundle among them) owned by their patch, so enabling or disabling the bundle from the
+  plugin page at runtime no longer survives a restart — the profile configuration wins on the next
+  start.
 
 ## License
 

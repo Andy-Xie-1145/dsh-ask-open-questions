@@ -79,7 +79,7 @@ Host 半区还注册了一段 prompt section，向模型说明两种题型、pla
 ## 兼容性
 
 - **支持的 DSH 范围：`>=0.2.0-0 <0.4`**（通过 `engines.dsh` 声明，预发布版本参与匹配）。
-  已在 `0.2.1-rc.5` 上构建并验证。范围覆盖整个 `0.2.x` 与 `0.3.x`，后续版本可直接安装、无需
+  已在 `0.2.1-rc.5` 与 `0.2.2-rc.5` 上构建并验证。范围覆盖整个 `0.2.x` 与 `0.3.x`，后续版本可直接安装、无需
   人工豁免；`0.1.x` 与 `0.4+` 会被拒绝——本组合包依赖的 scoped 工具注册表面不保证在那些版本
   可用。超出范围时 DSH 会阻止激活，并提供显式版本豁免流程（`dsh plugin allow-version` 或插件
   管理器），风险自担。
@@ -87,6 +87,8 @@ Host 半区还注册了一段 prompt section，向模型说明两种题型、pla
   `tools.register`）。
 - 客户端半区声明了对 `@deepseek-ai/dsh-client-ui-user-questions` 与
   `@deepseek-ai/dsh-client-ui-conversation` 的注入依赖。
+- **运行时启停在 DSH 0.2.2+ 不持久**：装载器现在把补丁插入的 bundle 行（含本插件）归补丁所有，
+  在插件页运行时启用/停用不再跨重启保留——下次启动以 profile 配置为准。
 
 ## 许可证
 
